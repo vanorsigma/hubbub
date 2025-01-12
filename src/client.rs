@@ -71,10 +71,10 @@ where
         let ws_ref = self.ws.clone();
         let hb = ws.heartbeat;
         tokio::task::spawn(async move {
-            let mut i = async_timer::Interval::platform_new(Duration::from_millis(hb));
+            let mut i = tokio::time::interval(Duration::from_millis(hb));
 
             loop {
-                i.as_mut().await;
+                i.tick().await;
 
                 let mut lock = ws_ref.lock().await;
                 let seq = lock.sequence.clone();
